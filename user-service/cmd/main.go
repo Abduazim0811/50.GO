@@ -2,7 +2,9 @@ package main
 
 import (
 	"User-service/db"
+	"User-service/handlers"
 	"log"
+	"net/http"
 
 	"github.com/joho/godotenv"
 )
@@ -17,5 +19,7 @@ func main() {
 		log.Fatal("DB connection could not be set")
 	}
 	storage:=db.NewStorage(database)
-
+	userHandler := handlers.NewHandler((*db.User)(storage))
+	http.HandleFunc("/user", userHandler.CreateUser)
+	log.Fatal(http.ListenAndServe(":9000", nil))	
 }
